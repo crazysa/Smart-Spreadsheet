@@ -1,4 +1,5 @@
 from pathlib import Path
+import openpyxl
 from openpyxl import load_workbook
 from openpyxl.cell.cell import Cell
 from openpyxl.worksheet.worksheet import Worksheet
@@ -68,7 +69,26 @@ def calculate_num_leading_space_per_level(row_headers: list[str]) -> int:
             return next_spaces - current_spaces
     return 0
 
+def get_excel_tables(file_path):
+    # Load the workbook
+    wb = openpyxl.load_workbook(file_path)
+    tables = {}
 
+    # Iterate through each sheet in the workbook
+    for sheet in wb.worksheets:
+        sheet_tables = sheet._tables  # Get all the tables in the sheet
+        for table in sheet_tables.values():
+            table_name = table.name
+            table_data = []
+
+            # Get the range of the table
+            for row in sheet[table.ref]:
+                row_data = [cell.value for cell in row]
+                table_data.append(row_data)
+
+            tables[table_name] = table_data
+
+    return tables
 def process_hierarchical_table(ws: Worksheet) -> dict[str, Any]:
     """
     process_hierarchical_table handles a spreadsheet which has one table starting from the top left corner
@@ -126,10 +146,8 @@ def process_hierarchical_table(ws: Worksheet) -> dict[str, Any]:
 
     # Process each row into the hierarchical structure
     for row in ws.iter_rows(min_row=2, values_only=False):
-        level = (
-            len(serialize_value(row[0])))
-            - len(serialize_value(row[0])).lstrip()
-         // num_leading_space_per_level
+        level = len(serialize_value(row[0]))- len(serialize_value(row[0]).lstrip())
+        # num_leading_space_per_level
         label = serialize_value(row[0]).strip()
         data_cells = row[1:]
 
