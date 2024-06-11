@@ -13,7 +13,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from rest_framework.response import Response
 
-os.environ['OPENAI_API_KEY'] = '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'
+# os.environ['OPENAI_API_KEY'] = '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'
 
 def atoi(text):
     return int(text) if text.isdigit() else text
