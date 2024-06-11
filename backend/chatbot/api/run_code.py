@@ -1,12 +1,10 @@
+# This code is provided under the following terms:
+# This code is for testing, non-commercial use only.
+# This code or any part of it shouldn't be copied without my consent
 from langchain.agents.agent_types import AgentType
-# from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
-
-# from langchain.llms import OpenAI
 from langchain_experimental.agents import create_pandas_dataframe_agent
-# import pandas as pd
 import os
 import pandas as pd
-# from langchain_openai import OpenAI
 import re
 from langchain_openai import ChatOpenAI
 from rest_framework import status
@@ -15,7 +13,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from rest_framework.response import Response
 
-os.environ['OPENAI_API_KEY'] = 'sk-uaDHPQUUz3C06hMLBnKQT3BlbkFJ8yzbmaLa8ffuMTOBKQE'
+os.environ['OPENAI_API_KEY'] = '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'
 
 def atoi(text):
     return int(text) if text.isdigit() else text

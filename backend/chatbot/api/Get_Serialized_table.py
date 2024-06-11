@@ -3,7 +3,7 @@
 
 # This code is provided under the following terms:
 # This code is for testing, non-commercial use only.
-# This code or any part of it shouldn't be copied without shubham's consent
+# This code or any part of it shouldn't be copied without my consent
 
 
 # worksheet = get_sheet_from_excel(path_to_excel, sheet_name)
@@ -23,11 +23,10 @@ from django.core.files.storage import default_storage
 def load_excel(file_path):
     return openpyxl.load_workbook(file_path, data_only=True)
 
+
 def find_tables(sheet):
     tables = []
     rows = list(sheet.iter_rows())
-
-    in_table = False
     table_start = None
     for i, row in enumerate(rows):
         start_table = False
@@ -112,11 +111,7 @@ def main(excel_file_path, output_dir):
             print(f"Table {table_name} saved to {output_dir}")
 
 
-# if __name__ == "__main__":
 
-#     excel_file_path = "/home/shubham/Desktop/Smart-Spreadsheet/tests/example_0.xlsx"
-#     output_dir = "output_tables"
-#     main(excel_file_path, output_dir)
 @api_view(['POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def upload_excel_file (request):
