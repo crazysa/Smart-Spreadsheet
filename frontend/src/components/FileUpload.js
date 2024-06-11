@@ -1,8 +1,6 @@
-// src/components/FileUpload.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
-import * as XLSX from 'xlsx';
+import './FileUpload.css';
 
 const FileUpload = () => {
     const [files, setFiles] = useState([]);
@@ -18,7 +16,7 @@ const FileUpload = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/upload', formData, {
+            const response = await axios.post('http://127.0.0.1:8000/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -30,9 +28,16 @@ const FileUpload = () => {
     };
 
     return (
-        <div>
-            <input type="file" multiple onChange={handleFileChange} />
-            <button onClick={handleUpload}>Upload</button>
+        <div className="file-upload-container">
+            <h2>Upload Excel Files</h2>
+            <input 
+                type="file" 
+                id="file-upload" 
+                multiple 
+                onChange={handleFileChange} 
+            />
+            <label htmlFor="file-upload" className="file-upload-label">Choose Files</label>
+            <button className="upload-button" onClick={handleUpload}>Upload</button>
         </div>
     );
 };

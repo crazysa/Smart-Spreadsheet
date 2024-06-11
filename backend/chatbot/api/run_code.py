@@ -10,6 +10,8 @@ import pandas as pd
 import re
 from langchain_openai import ChatOpenAI
 from rest_framework import status
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from rest_framework.response import Response
 
@@ -24,11 +26,10 @@ def natural_keys(text):
 def sort_wrt_numbers(list):
     list.sort(key=natural_keys)
     return list
-from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+
 
 #http://127.0.0.1:8000/api/?format=json
-@api_view(('GET',))
+@api_view(['GET'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def run( prompt = "What is the Total Cash and Cash Equivalent of Oct. AND Nov. of 2023 combined?", local_folder_path = '/home/shubham/Desktop/Smart-Spreadsheet/output_tables/') -> str:
     return Response(

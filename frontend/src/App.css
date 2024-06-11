@@ -1,0 +1,14 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  background-color: #f4f4f9;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.App h1 {
+  color: #333;
+  margin-bottom: 40px;
+}

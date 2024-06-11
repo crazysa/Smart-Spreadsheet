@@ -3,16 +3,22 @@
 
 # This code is provided under the following terms:
 # This code is for testing, non-commercial use only.
-# This code or any part of it shouldn't be copied without my consent
-path_to_excel = "/home/shub/Desktop/Smart-Spreadsheet/tests/example_0.xlsx"
-sheet_name = "Analysis Output"
+# This code or any part of it shouldn't be copied without shubham's consent
+
 
 # worksheet = get_sheet_from_excel(path_to_excel, sheet_name)
 
+from rest_framework import status
 
+from rest_framework.response import Response
 import openpyxl
 import csv
+import sys
+import shutil
 import os
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from django.core.files.storage import default_storage
 
 def load_excel(file_path):
     return openpyxl.load_workbook(file_path, data_only=True)
@@ -79,6 +85,11 @@ def get_end_index(table_data):
             break
     return end_index
 
+import random, string
+def random_string(num_chars=24):
+    return ''.join(random.choice(
+        string.ascii_uppercase +
+        string.ascii_lowercase + string.digits) for _ in range(num_chars))
 
 def main(excel_file_path, output_dir):
     wb = load_excel(excel_file_path)
@@ -101,10 +112,26 @@ def main(excel_file_path, output_dir):
             print(f"Table {table_name} saved to {output_dir}")
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    excel_file_path = "/home/shubham/Desktop/Smart-Spreadsheet/tests/example_0.xlsx"
-    output_dir = "output_tables"
-    main(excel_file_path, output_dir)
+#     excel_file_path = "/home/shubham/Desktop/Smart-Spreadsheet/tests/example_0.xlsx"
+#     output_dir = "output_tables"
+#     main(excel_file_path, output_dir)
+@api_view(['POST'])
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+def upload_excel_file (request):
+    print(request)
+    excel_path = f"{os.getcwd()}/tmp/{random_string()}"    
+    default_storage.save(os.path.join(excel_path, "excel.xlsx"), request.FILES.get('files'))
+    output_dir  = f"{os.getcwd()}/tmp/output/"
+    if os.path.isdir(output_dir):
+        shutil.rmtree(output_dir)
+        os.makedirs(output_dir)
+    main(os.path.join(excel_path, "excel.xlsx"), output_dir)
+    # pass
+    return Response(
+            status=status.HTTP_200_OK,
+            data="Testing, Please check your input data and make sure the frames are of good quality before trying again")
+    
 
 

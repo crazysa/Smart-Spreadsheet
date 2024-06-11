@@ -5,3 +5,7 @@ pandas
 django
 djangorestframework
 environs
+langchain-experimental
+langchain-openai
+django-cors-headers
+
