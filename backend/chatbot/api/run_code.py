@@ -29,12 +29,12 @@ def sort_wrt_numbers(list):
 
 
 #http://127.0.0.1:8000/api/?format=json
-@api_view(['GET'])
+@api_view(['POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def run( prompt = "What is the Total Cash and Cash Equivalent of Oct. AND Nov. of 2023 combined?", local_folder_path = '/home/shubham/Desktop/Smart-Spreadsheet/output_tables/') -> str:
-    return Response(
-            status=status.HTTP_200_OK,
-            data="Calibration Failed. Please check your input data and make sure the frames are of good quality before trying again")
+def run( request) -> str:
+    prompt = request.data.get('prompt',"Hi , What can you tell me about the data?")
+    local_folder_path  = f"{os.getcwd()}/tmp/output/"
+    
     all_csv = []
 
     for file in sort_wrt_numbers(os.listdir(local_folder_path)):
@@ -54,8 +54,10 @@ def run( prompt = "What is the Total Cash and Cash Equivalent of Oct. AND Nov. o
     # response = agent.run(prompt)
     response = agent.invoke(prompt)
     print(response)
-
-    return response
+    return Response(
+            status=status.HTTP_200_OK,
+            data=response)
+    
 
 # with strong enough computer and enough data we can fine tune any open source model to reduce price
 # def run_hugging_face( prompt: str, local_folder_path: str) -> str:

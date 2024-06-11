@@ -8,4 +8,5 @@ environs
 langchain-experimental
 langchain-openai
 django-cors-headers
+tabulate
 
