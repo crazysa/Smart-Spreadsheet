@@ -77,9 +77,15 @@ def find_tables(sheet):
 
     return tables
 
-def extract_table(sheet, start_row, end_row):
+def extract_table(sheet, start_row, end_row, start_col=None, end_col=None):
+    # If start_col and end_col are not provided, default to the entire row width
+    if start_col is None:
+        start_col = 1
+    if end_col is None:
+        end_col = sheet.max_column
+    
     table_data = []
-    for row in sheet.iter_rows(min_row=start_row + 1, max_row=end_row + 1, values_only=True):
+    for row in sheet.iter_rows(min_row=start_row + 1, max_row=end_row + 1, min_col=start_col, max_col=end_col, values_only=True):
         table_data.append(list(row))
     return table_data
 
@@ -123,24 +129,42 @@ def random_string(num_chars=24):
 
 def main(excel_file_path, output_dir):
     wb = load_excel(excel_file_path)
-
+    use_the_updated_algo = False
     for sheet in wb.worksheets:
-        tables = find_tables(sheet)
-        # tables = find_tables_advanced(sheet)
-        for i, (start_row, end_row) in enumerate(tables):
-            table_data = extract_table(sheet, start_row, end_row)
-            table_name = f"{sheet.title}_table_{i+1}"
-            start_index = 0
-            end_index = len(table_data[0])
-            table_data = [f for f in table_data if any(f)]
-            start_index = get_start_index(table_data)
-            end_index = get_end_index(table_data)
-                          
-            for index in range(len(table_data)):
-                table_data[index] = table_data[index][start_index:end_index+1]
+        if not use_the_updated_algo:
+            tables = find_tables(sheet)
+            for i, (start_row, end_row) in enumerate(tables):
+                table_data = extract_table(sheet, start_row, end_row)
+                table_name = f"{sheet.title}_table_{i+1}"
+                start_index = 0
+                end_index = len(table_data[0])
+                table_data = [f for f in table_data if any(f)]
+                start_index = get_start_index(table_data)
+                end_index = get_end_index(table_data)
+                            
+                for index in range(len(table_data)):
+                    table_data[index] = table_data[index][start_index:end_index+1]
 
-            save_table_as_csv(table_data, table_name, output_dir)
-            print(f"Table {table_name} saved to {output_dir}")
+                save_table_as_csv(table_data, table_name, output_dir)
+                print(f"Table {table_name} saved to {output_dir}")
+        else:
+            tables = find_tables_advanced(sheet)
+            for i, (start_row, start_col, end_row, end_col) in enumerate(tables):
+                table_data = extract_table(sheet, start_row, end_row, start_col, end_col)
+                table_name = f"{sheet.title}_table_{i+1}"
+                start_index = 0
+                end_index = len(table_data[0])
+                table_data = [f for f in table_data if any(f)]
+                # start_index = get_start_index(table_data)
+                # end_index = get_end_index(table_data)
+                # start_index = 0
+            
+                for index in range(len(table_data)):
+                    table_data[index] = table_data[index][start_index:end_index+1]
+
+                save_table_as_csv(table_data, table_name, output_dir)
+                print(f"Table {table_name} saved to {output_dir}")
+            
 
 
 
