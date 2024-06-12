@@ -23,6 +23,37 @@ from django.core.files.storage import default_storage
 def load_excel(file_path):
     return openpyxl.load_workbook(file_path, data_only=True)
 
+def get_remaining_table_from_start(sheet, start_row, start_col):
+    row_to_check = list(sheet.iter_rows())[start_row][start_col:]
+    end_col = len(row_to_check)-1
+    for index,col in enumerate(row_to_check):
+        if not col.border.top.style:
+            end_col = start_col+index-1
+            break
+    
+    col_to_check = list(sheet.iter_cols())[start_col][start_row:]
+    end_row = len(col_to_check)-1
+    for index, row in enumerate(col_to_check):
+        if not row.border.left.style:
+            end_row = start_row+index-1
+            break
+    return start_row, start_col, end_row, end_col
+def find_tables_advanced(sheet):
+    tables = []
+    
+    rows = list(sheet.iter_rows())
+    end_col = 0
+    end_row = 0
+    for i, row in enumerate(rows):
+        
+        for col_index,r in enumerate(row):
+            if r.border.left.style and r.border.top.style  and( col_index >= end_col or i >= end_row):
+                start_row, start_col, end_row, end_col = get_remaining_table_from_start(sheet, i, col_index)
+                tables.append((start_row, start_col, end_row, end_col))
+    
+
+    return tables
+    
 
 def find_tables(sheet):
     tables = []
@@ -95,6 +126,7 @@ def main(excel_file_path, output_dir):
 
     for sheet in wb.worksheets:
         tables = find_tables(sheet)
+        # tables = find_tables_advanced(sheet)
         for i, (start_row, end_row) in enumerate(tables):
             table_data = extract_table(sheet, start_row, end_row)
             table_name = f"{sheet.title}_table_{i+1}"

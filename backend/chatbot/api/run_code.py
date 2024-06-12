@@ -57,7 +57,7 @@ def run( request) -> str:
             data=response)
     
 
-# with strong enough computer and enough data we can fine tune any open source model to reduce price
+# with strong enough computer and enough data we can fine tune any open source model to reduce external dependencyhot
 # def run_hugging_face( prompt: str, local_folder_path: str) -> str:
 #     from datasets import load_dataset
 #     from transformers import AutoTokenizer, AutoModelForCausalLM
